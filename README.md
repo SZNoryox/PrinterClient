@@ -19,7 +19,7 @@ Printer SDK is using AIDL integration. About AIDL, please refer to [https://deve
 2. Add query tag in `AndroidManifest.xml` to adapt `android 11 package visibility` for Android 12 platform
 ```xml
 <queries>
-    <package android:name="net.nyx.printerservice"/>
+    <package android:name="com.incar.printerservice"/>
 </queries>
 ```
 3. Bind printer AIDL service
@@ -43,8 +43,8 @@ private ServiceConnection connService = new ServiceConnection() {
 
 private void bindService() {
     Intent intent = new Intent();
-    intent.setPackage("net.nyx.printerservice");
-    intent.setAction("net.nyx.printerservice.IPrinterService");
+    intent.setPackage("com.incar.printerservice");
+    intent.setAction("com.incar.printerservice.IPrinterService");
     bindService(intent, connService, Context.BIND_AUTO_CREATE);
 }
 
@@ -341,7 +341,7 @@ Just start a system activity to get built-in camera scanner. The capture surface
 ```
 private void scan() {
     Intent intent = new Intent();
-    intent.setComponent(new ComponentName("net.nyx.scanner",
+    intent.setComponent(new ComponentName("com.incar.scanner",
             "net.nyx.scanner.ScannerActivity"));
     // set the capture activity actionbar title
     //intent.putExtra("TITLE", "Scan");
