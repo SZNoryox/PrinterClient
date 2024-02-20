@@ -92,8 +92,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void bindService() {
         Intent intent = new Intent();
-        intent.setPackage("net.nyx.printerservice");
-        intent.setAction("net.nyx.printerservice.IPrinterService");
+        intent.setPackage("com.incar.printerservice");
+        intent.setAction("com.incar.printerservice.IPrinterService");
         bindService(intent, connService, Context.BIND_AUTO_CREATE);
     }
 
