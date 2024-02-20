@@ -21,7 +21,7 @@ Demo使用AIDL进行集成。有关AIDL，请参考 [https://developer.android.c
 2. Android12在`AndroidManifest.xml`添加标签以适配 `android 11 package visibility`
 ```xml
 <queries>
-    <package android:name="net.nyx.printerservice"/>
+    <package android:name="com.incar.printerservice"/>
 </queries>
 ```
 3. 绑定AIDL service
@@ -45,8 +45,8 @@ private ServiceConnection connService = new ServiceConnection() {
 
 private void bindService() {
     Intent intent = new Intent();
-    intent.setPackage("net.nyx.printerservice");
-    intent.setAction("net.nyx.printerservice.IPrinterService");
+    intent.setPackage("com.incar.printerservice");
+    intent.setAction("com.incar.printerservice.IPrinterService");
     bindService(intent, connService, Context.BIND_AUTO_CREATE);
 }
 
@@ -343,7 +343,7 @@ private void setLcdLogo() {
 ```
 private void scan() {
     Intent intent = new Intent();
-    intent.setComponent(new ComponentName("net.nyx.scanner",
+    intent.setComponent(new ComponentName("com.incar.scanner",
             "net.nyx.scanner.ScannerActivity"));
     // set the capture activity actionbar title
     //intent.putExtra("TITLE", "Scan");

@@ -93,8 +93,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void bindService() {
         Intent intent = new Intent();
-        intent.setPackage("net.nyx.printerservice");
-        intent.setAction("net.nyx.printerservice.IPrinterService");
+        intent.setPackage("com.incar.printerservice");
+        intent.setAction("com.incar.printerservice.IPrinterService");
         bindService(intent, connService, Context.BIND_AUTO_CREATE);
     }
 
@@ -582,12 +582,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void cameraScan() {
         // need permission "android.permission.QUERY_ALL_PACKAGES" for android 11 package visible
-        if (!existApp("net.nyx.scanner")) {
+        if (!existApp("com.incar.scanner")) {
             showLog("Scanner app is not installed");
             return;
         }
         Intent intent = new Intent();
-        intent.setComponent(new ComponentName("net.nyx.scanner",
+        intent.setComponent(new ComponentName("com.incar.scanner",
                 "net.nyx.scanner.ScannerActivity"));
         // set the capture activity actionbar title
         intent.putExtra("TITLE", "Scan");
