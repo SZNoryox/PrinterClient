@@ -128,6 +128,8 @@ private void printTable() {
 
 ### 打印ESC/POS指令
 透传ESC/POS指令，ESC指令集可以参考 [ESC/POS](https://download4.epson.biz/sec_pubs/pos/reference_en/escpos/commands.html)
+
+**注意**：该接口与其他sdk同步接口不同，该接口是异步的，调用该接口只会将ESC/POS指令传输至指令队列，返回值表示指令成功入队，并不会返回打印机状态。请勿将该接口与其他接口混合使用，否则会出现打印内容顺序错乱情况。此处仅为使用ESC/POS指令客户提供除蓝牙外的额外选择。
 ```
 private void printEscpos() {
     singleThreadExecutor.submit(new Runnable() {

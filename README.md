@@ -124,6 +124,8 @@ private void printTable() {
 
 ### Print ESC/POS commands
 For details about the common ESC instruction set, please see [ESC/POS Commands](https://download4.epson.biz/sec_pubs/pos/reference_en/escpos/commands.html)
+
+**Note**: This interface is different from other SDK synchronization interfaces. This interface is asynchronous. Calling this interface will only transmit ESC/POS instructions to the instruction queue. The return value indicates that the instruction is successfully enqueued and will not return to the printer status. Do not mix this interface with other interfaces, otherwise the order of printing content will be inconsistent. Here only provides additional options for customers using ESC/POS instructions.
 ```
 private void printEscpos() {
     singleThreadExecutor.submit(new Runnable() {

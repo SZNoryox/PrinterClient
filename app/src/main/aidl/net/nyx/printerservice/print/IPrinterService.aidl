@@ -121,6 +121,7 @@ interface IPrinterService {
      *
      * @param bytes raster bitmap data
      * @return Result
+     * @since PrinterService v1.5.9
      */
     int printRasterData(in byte[] bytes);
 
@@ -129,6 +130,7 @@ interface IPrinterService {
      *
      * @param cmd ESC/POS commands
      * @return Result
+     * @since PrinterService v1.5.9
      */
     int printEscposData(in byte[] cmd);
 
@@ -139,6 +141,7 @@ interface IPrinterService {
      * @param weights column width weight
      * @param formats text format for each column
      * @return Result
+     * @since PrinterService v1.5.9
      */
     int printTableText(in String[] texts, in int[] weights, in PrintTextFormat[] formats);
 
@@ -146,6 +149,7 @@ interface IPrinterService {
      * After printing, feed paper to cutting position
      *
      * @return Result
+     * @since PrinterService v1.5.9
      */
     int printEndAutoOut();
 
