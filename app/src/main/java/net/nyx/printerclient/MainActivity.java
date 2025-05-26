@@ -1,5 +1,6 @@
 package net.nyx.printerclient;
 
+import android.app.AlertDialog;
 import android.content.*;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -43,6 +44,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     protected Button btn6;
     protected Button btnLbl;
     protected Button btnLblLearning;
+    protected Button btnGetDensity;
+    protected Button btnSetDensity;
     protected Button btnLcdBmp;
     protected Button btnLcdReset;
     protected Button btnLcdWakeup;
@@ -107,6 +110,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             getVersion();
         } else if (view.getId() == R.id.btn_paper) {
             paperOut();
+        } else if (view.getId() == R.id.btn_get_density) {
+            getDensity();
+        } else if (view.getId() == R.id.btn_set_density) {
+            setDensity();
         } else if (view.getId() == R.id.btn_print) {
             printTest();
         } else if (view.getId() == R.id.btn1) {
@@ -163,6 +170,48 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 try {
                     printerService.paperOut(80);
                 } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void getDensity() {
+        singleThreadExecutor.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    int[] density = new int[1];
+                    int ret = printerService.getPrinterDensity(density);
+                    showLog("Printer density: " + msg(ret) + "  " + density[0]);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void setDensity() {
+        int[] densityList = {100, 110, 120, 130};
+        String[] densityTextList = {"100%", "110%", "120%", "130%"};
+        new AlertDialog
+                .Builder(this, android.R.style.Theme_Material_Light_Dialog)
+                .setTitle(R.string.main_set_density)
+                .setItems(densityTextList, (dialog, which) -> {
+                    setDensity(densityList[which]);
+                })
+                .show();
+
+    }
+
+    private void setDensity(int density) {
+        singleThreadExecutor.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    int ret = printerService.setPrinterDensity(density);
+                    showLog("Set printer density: " + msg(ret));
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -364,7 +413,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         ret = printerService.labelDetectAuto();
                     }
                     if (ret == 0) {
-                        ret = printerService.labelLocateAuto();
+                        // set label height and gap. using different params by different label type
+                        ret = printerService.labelLocateAuto(240, 16);
                         if (ret == 0) {
                             PrintTextFormat format = new PrintTextFormat();
                             printerService.printText("\nModel:\t\tNB55", format);
@@ -577,6 +627,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         btnLbl.setOnClickListener(MainActivity.this);
         btnLblLearning = (Button) findViewById(R.id.btn_lbl_learning);
         btnLblLearning.setOnClickListener(MainActivity.this);
+        btnGetDensity = (Button) findViewById(R.id.btn_get_density);
+        btnGetDensity.setOnClickListener(MainActivity.this);
+        btnSetDensity = (Button) findViewById(R.id.btn_set_density);
+        btnSetDensity.setOnClickListener(MainActivity.this);
         btnLcdBmp = (Button) findViewById(R.id.btn_lcd_bmp);
         btnLcdBmp.setOnClickListener(MainActivity.this);
         btnLcdReset = (Button) findViewById(R.id.btn_lcd_reset);

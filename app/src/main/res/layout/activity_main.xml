@@ -32,6 +32,29 @@
             />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:id="@+id/btn_get_density"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:text="@string/main_get_density"
+            />
+
+        <Button
+            android:id="@+id/btn_set_density"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:text="@string/main_set_density"
+            />
+    </LinearLayout>
+
     <Button
         android:id="@+id/btn_print"
         android:layout_width="match_parent"
@@ -85,19 +108,28 @@
         android:text="@string/main_escpos"
         />
 
-    <Button
-        android:id="@+id/btn_lbl"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="@string/main_lbl"
-        />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
 
-    <Button
-        android:id="@+id/btn_lbl_learning"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="@string/main_lbl_learning"
-        />
+        <Button
+            android:id="@+id/btn_lbl"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:text="@string/main_lbl"
+            />
+
+        <Button
+            android:id="@+id/btn_lbl_learning"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:text="@string/main_lbl_learning"
+            />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

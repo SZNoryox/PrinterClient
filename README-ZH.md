@@ -17,7 +17,7 @@ Demo使用AIDL进行集成。有关AIDL，请参考 [https://developer.android.c
 - [net.nyx.printerservice.print.PrintTextFormat.java](app/src/main/java/net/nyx/printerservice/print/PrintTextFormat.java) —— the java bean class to set the print text style
 
 ### 集成
-1. 在项⽬中添加上述三个⽂件且不能修改包路径和包名
+1. 在项⽬中添加上述三个⽂件且保持包路径和文件不变
 2. Android12在`AndroidManifest.xml`添加标签以适配 `android 11 package visibility`
 ```xml
 <queries>
@@ -204,7 +204,8 @@ private void printLabelLearning() {
                     ret = printerService.labelDetectAuto();
                 }
                 if (ret == 0) {
-                    ret = printerService.labelLocateAuto();
+                    // set label height and gap. using different params by different label type
+                    ret = printerService.labelLocateAuto(240, 16);
                     if (ret == 0) {
                         PrintTextFormat format = new PrintTextFormat();
                         printerService.printText("/nModel:/t/tNB55", format);
@@ -433,3 +434,13 @@ NFC使用Android通用NFC模块，具体介绍可参考[Android NFC](https://dev
 读卡相关可以参考以下项目
 - [MifareClassicTool](https://github.com/ikarus23/MifareClassicTool)
 - [EMV-NFC-Paycard-Enrollment](https://github.com/devnied/EMV-NFC-Paycard-Enrollment)
+
+## Q&A
+1. 使用AGP8.0+ 或者报错 `Unresolved reference: IPrinterService`, `java.lang.NullPointerException: Attempt to invoke interface method 'int net.nyx.printerservice.print.IPrinterService.printText(java.lang.String, net.nyx.printerservice.print.PrintTextFormat)' on a null object reference`
+
+`build.gradle`中增加如下配置, [AIDL详情](https://developer.android.com/build/releases/past-releases/agp-8-0-0-release-notes)
+```
+buildFeatures {
+    aidl = true
+}
+```

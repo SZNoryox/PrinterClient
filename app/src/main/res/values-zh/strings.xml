@@ -11,6 +11,8 @@
     <string name="main_escpos">ESC/POS指令</string>
     <string name="main_lbl">标签</string>
     <string name="main_lbl_learning">标签学习打印</string>
+    <string name="main_get_density">获取打印浓度</string>
+    <string name="main_set_density">设置打印浓度</string>
     <string name="main_lcd_bitmap">客显屏显示</string>
     <string name="main_lcd_reset">客显屏还原</string>
     <string name="main_lcd_wakeup">客显屏唤醒</string>

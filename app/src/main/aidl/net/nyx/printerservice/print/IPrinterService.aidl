@@ -91,9 +91,11 @@ interface IPrinterService {
      * Auto locate label. This method only can be called on the system that has performed
      * label learning by {@link #labelDetectAuto}
      *
+     * @param labelHeight label paper height, px
+     * @param labelGap    label paper gap, px
      * @return Result
      */
-    int labelLocateAuto();
+    int labelLocateAuto(int labelHeight, int labelGap);
 
     /**
      * Label learning by automatic label detection. This method will start label learning
@@ -154,12 +156,12 @@ interface IPrinterService {
     int printEndAutoOut();
 
     /**
-     * Show bitmap in customer display LCD
+     * Show black-white bitmap in customer display LCD
      *
      * @param bitmap Android bitmap object
      * @return Result
      * @since PrinterService v1.5.9 only support black-white bitmap
-     * @since PrinterService v1.7.6 support colored bitmap
+     * @since PrinterService v1.7.6 support colored bitmap automatic conversion
      */
     int showLcdBitmap(in Bitmap bitmap);
 
@@ -197,4 +199,24 @@ interface IPrinterService {
      * @since PrinterService v1.7.9
      */
     int setLcdLogo(in Bitmap bitmap);
+
+    /**
+     * Get printer density
+     *
+     * @param density Return paramater, printer density
+     * @return Result
+     * @since PrinterService v1.9.2
+     */
+    int getPrinterDensity(out int[] density);
+
+    /**
+     * Set printer density
+     *
+     * @param density Printer density
+     *                58mm: 80/90/100/110/120/130
+     *                80mm: 100/110/120/130
+     * @return Result
+     * @since PrinterService v1.9.2
+     */
+    int setPrinterDensity(int density);
 }

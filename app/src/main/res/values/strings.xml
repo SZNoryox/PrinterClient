@@ -12,6 +12,8 @@
     <string name="main_escpos">Print ESC/POS</string>
     <string name="main_lbl">Print label</string>
     <string name="main_lbl_learning">Label learning print</string>
+    <string name="main_get_density">Get density</string>
+    <string name="main_set_density">Set density</string>
     <string name="main_lcd_bitmap">Show LCD</string>
     <string name="main_lcd_reset">Reset LCD</string>
     <string name="main_lcd_wakeup">Wakeup LCD</string>

@@ -15,7 +15,7 @@ Printer SDK is using AIDL integration. About AIDL, please refer to [https://deve
 - [net.nyx.printerservice.print.PrintTextFormat.java](app/src/main/java/net/nyx/printerservice/print/PrintTextFormat.java) —— the java bean class to set the print text style
 
 ### Integration
-1. Add the above three files to the project and cannot modify the package path and package name
+1. Add the above three files to the project and cannot modify the package and file
 2. Add query tag in `AndroidManifest.xml` to adapt `android 11 package visibility` for Android 12 platform
 ```xml
 <queries>
@@ -201,7 +201,8 @@ private void printLabelLearning() {
                     ret = printerService.labelDetectAuto();
                 }
                 if (ret == 0) {
-                    ret = printerService.labelLocateAuto();
+                    // set label height and gap. using different params by different label type
+                    ret = printerService.labelLocateAuto(240, 16);
                     if (ret == 0) {
                         PrintTextFormat format = new PrintTextFormat();
                         printerService.printText("/nModel:/t/tNB55", format);
@@ -433,3 +434,12 @@ Card reading can refer to the following projects
 - [MifareClassicTool](https://github.com/ikarus23/MifareClassicTool)
 - [EMV-NFC-Paycard-Enrollment](https://github.com/devnied/EMV-NFC-Paycard-Enrollment)
 
+## Q&A
+1. If using AGP 8.0+ or throw exception like `Unresolved reference: IPrinterService`, `java.lang.NullPointerException: Attempt to invoke interface method 'int net.nyx.printerservice.print.IPrinterService.printText(java.lang.String, net.nyx.printerservice.print.PrintTextFormat)' on a null object reference`
+
+Add config in `build.gradle` as below, [For AIDL Details](https://developer.android.com/build/releases/past-releases/agp-8-0-0-release-notes)
+```
+buildFeatures {
+    aidl = true
+}
+```
