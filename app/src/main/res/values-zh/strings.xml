@@ -14,11 +14,15 @@
     <string name="main_get_density">获取打印浓度</string>
     <string name="main_set_density">设置打印浓度</string>
     <string name="main_lcd_bitmap">客显屏显示</string>
+    <string name="main_lcd_config">控制客显屏</string>
     <string name="main_lcd_reset">客显屏还原</string>
     <string name="main_lcd_wakeup">客显屏唤醒</string>
     <string name="main_lcd_sleep">客显屏休眠</string>
+    <string name="main_lcd_clear">客显屏清屏</string>
     <string name="main_cash_box">打开钱箱</string>
     <string name="main_qsc">红外扫码</string>
+    <string name="main_qsc_open">打开</string>
+    <string name="main_qsc_close">关闭</string>
     <string name="main_scan">相机扫码</string>
     <string name="res_not_support">当前版本不支持</string>
 

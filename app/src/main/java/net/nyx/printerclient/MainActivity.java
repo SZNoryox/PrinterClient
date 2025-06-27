@@ -47,9 +47,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     protected Button btnGetDensity;
     protected Button btnSetDensity;
     protected Button btnLcdBmp;
-    protected Button btnLcdReset;
-    protected Button btnLcdWakeup;
-    protected Button btnLcdSleep;
+    protected Button btnLcdConfig;
     protected Button btnCashBox;
     protected Button btnInfraredScan;
     protected Button btnCameraScan;
@@ -138,12 +136,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             printLabelLearning();
         } else if (view.getId() == R.id.btn_lcd_bmp) {
             showLcdBitmap();
-        } else if (view.getId() == R.id.btn_lcd_reset) {
-            configLcd(4);
-        } else if (view.getId() == R.id.btn_lcd_wakeup) {
-            configLcd(1);
-        } else if (view.getId() == R.id.btn_lcd_sleep) {
-            configLcd(2);
+        } else if (view.getId() == R.id.btn_lcd_config) {
+            configLcd();
         } else if (view.getId() == R.id.btn_cash_box) {
             openCashBox();
         }
@@ -225,7 +219,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 try {
                     PrintTextFormat textFormat = new PrintTextFormat();
                     int ret = printerService.printText(PRN_TEXT, textFormat);
-                    ret = printerService.printBarcode("123456789", 300, 160, 1, 1);
+                    ret = printerService.printBarcode("123456789", 300, 160, 1, 1, 0);
                     ret = printerService.printQrCode("123456789", 300, 300, 1);
                     ret = printerService.printBitmap(BitmapFactory.decodeStream(getAssets().open("bmp.png")), 1, 1);
                     showLog("Print test: " + msg(ret));
@@ -268,7 +262,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void run() {
                 try {
-                    int ret = printerService.printBarcode("123456789", 300, 160, 1, 1);
+                    int ret = printerService.printBarcode("123456789", 300, 160, 1, 1, 0);
                     showLog("Print text: " + msg(ret));
                     if (ret == 0) {
                         printerService.printEndAutoOut();
@@ -385,7 +379,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     if (ret == 0) {
                         PrintTextFormat format = new PrintTextFormat();
                         printerService.printText("\nModel:\t\tNB55", format);
-                        printerService.printBarcode("1234567890987654321", 320, 90, 2, 0);
+                        printerService.printBarcode("1234567890987654321", 320, 90, 2, 0, 0);
                         String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
                         printerService.printText("Time:\t\t" + date, format);
                         ret = printerService.labelPrintEnd();
@@ -418,7 +412,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         if (ret == 0) {
                             PrintTextFormat format = new PrintTextFormat();
                             printerService.printText("\nModel:\t\tNB55", format);
-                            printerService.printBarcode("1234567890987654321", 320, 90, 2, 0);
+                            printerService.printBarcode("1234567890987654321", 320, 90, 2, 0, 0);
                             String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
                             printerService.printText("Time:\t\t" + date, format);
                             printerService.labelPrintEnd();
@@ -444,7 +438,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     if (ret == 0) {
                         ret = printerService.setLcdLogo(bitmap);
                     }
-                    showLog("Show LCD default: " + msg(ret));
+                    showLog("Set LCD logo: " + msg(ret));
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -471,6 +465,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 hideDialog();
             }
         });
+    }
+
+    private void configLcd() {
+        String[] list = {
+                getString(R.string.main_lcd_wakeup),
+                getString(R.string.main_lcd_sleep),
+                getString(R.string.main_lcd_clear),
+                getString(R.string.main_lcd_reset),
+        };
+        new AlertDialog
+                .Builder(this, android.R.style.Theme_Material_Light_Dialog)
+                .setTitle(R.string.main_lcd_config)
+                .setItems(list, (dialog, which) -> {
+                    configLcd(which + 1);
+                })
+                .show();
     }
 
     private void configLcd(int opt) {
@@ -528,12 +538,41 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void infraredScan() {
+        String[] list = {"Open", "Close"};
+        new AlertDialog
+                .Builder(this, android.R.style.Theme_Material_Light_Dialog)
+                .setTitle(R.string.main_qsc)
+                .setItems(list, (dialog, which) -> {
+                    if (which == 0) {
+                        openInfraredScan();
+                    } else {
+                        closeInfraredScan();
+                    }
+                })
+                .show();
+    }
+
+    private void openInfraredScan() {
         singleThreadExecutor.submit(new Runnable() {
             @Override
             public void run() {
                 try {
-                    int ret = printerService.triggerQscScan();
-                    showLog("Infrared scan: " + msg(ret));
+                    int ret = printerService.triggerQscScan(0);
+                    showLog("Open Infrared scan: " + msg(ret));
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void closeInfraredScan() {
+        singleThreadExecutor.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    int ret = printerService.triggerQscScan(1);
+                    showLog("Close Infrared scan: " + msg(ret));
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -633,12 +672,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         btnSetDensity.setOnClickListener(MainActivity.this);
         btnLcdBmp = (Button) findViewById(R.id.btn_lcd_bmp);
         btnLcdBmp.setOnClickListener(MainActivity.this);
-        btnLcdReset = (Button) findViewById(R.id.btn_lcd_reset);
-        btnLcdReset.setOnClickListener(MainActivity.this);
-        btnLcdWakeup = (Button) findViewById(R.id.btn_lcd_wakeup);
-        btnLcdWakeup.setOnClickListener(MainActivity.this);
-        btnLcdSleep = (Button) findViewById(R.id.btn_lcd_sleep);
-        btnLcdSleep.setOnClickListener(MainActivity.this);
+        btnLcdConfig = (Button) findViewById(R.id.btn_lcd_config);
+        btnLcdConfig.setOnClickListener(MainActivity.this);
         btnCashBox = (Button) findViewById(R.id.btn_cash_box);
         btnCashBox.setOnClickListener(MainActivity.this);
     }

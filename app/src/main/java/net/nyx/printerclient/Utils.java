@@ -14,9 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-/**
- * Created by yyzz on 2019/1/4.
- */
 public class Utils {
 
     private static final String TAG = "Utils";
@@ -85,13 +82,10 @@ public class Utils {
         if (content == null || "".equals(content)) {
             return null;
         }
-        // 配置参数
         Map<EncodeHintType, Object> hints = new HashMap<>();
         hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
-        // 容错级
         hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
-        // 设置空白边距的宽度
-        hints.put(EncodeHintType.MARGIN, 0); // default is 4
+        hints.put(EncodeHintType.MARGIN, 0);
 
         Bitmap bitmap;
         try {

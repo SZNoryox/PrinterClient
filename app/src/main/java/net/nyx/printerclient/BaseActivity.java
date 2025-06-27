@@ -33,13 +33,15 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public void hideDialog() {
-        if (isFinishing() || isDestroyed()) {
-            return;
-        }
-        if (mDialog == null || !mDialog.isShowing()) {
-            return;
-        }
-        mDialog.dismiss();
+        handler.post(() -> {
+            if (isFinishing() || isDestroyed()) {
+                return;
+            }
+            if (mDialog == null || !mDialog.isShowing()) {
+                return;
+            }
+            mDialog.dismiss();
+        });
     }
 
     @Override

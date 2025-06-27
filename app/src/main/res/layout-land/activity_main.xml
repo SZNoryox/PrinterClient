@@ -106,19 +106,28 @@
                 android:visibility="gone"
                 />
 
-            <Button
-                android:id="@+id/btn5"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:text="@string/main_table"
-                />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
 
-            <Button
-                android:id="@+id/btn6"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:text="@string/main_escpos"
-                />
+                <Button
+                    android:id="@+id/btn5"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:text="@string/main_table"
+                    />
+
+                <Button
+                    android:id="@+id/btn6"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"
+                    android:text="@string/main_escpos"
+                    />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -150,7 +159,7 @@
                 >
 
                 <Button
-                    android:id="@+id/btn_lcd_bmp"
+                    android:id="@+id/btn_lcd_show"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
                     android:layout_weight="1"
@@ -158,34 +167,11 @@
                     />
 
                 <Button
-                    android:id="@+id/btn_lcd_reset"
+                    android:id="@+id/btn_lcd_config"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
                     android:layout_weight="1"
-                    android:text="@string/main_lcd_reset"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-
-                <Button
-                    android:id="@+id/btn_lcd_wakeup"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:text="@string/main_lcd_wakeup"
-                    />
-
-                <Button
-                    android:id="@+id/btn_lcd_sleep"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:text="@string/main_lcd_sleep"
+                    android:text="@string/main_lcd_config"
                     />
             </LinearLayout>
 

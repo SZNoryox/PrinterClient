@@ -15,11 +15,15 @@
     <string name="main_get_density">Get density</string>
     <string name="main_set_density">Set density</string>
     <string name="main_lcd_bitmap">Show LCD</string>
+    <string name="main_lcd_config">Config LCD</string>
     <string name="main_lcd_reset">Reset LCD</string>
     <string name="main_lcd_wakeup">Wakeup LCD</string>
     <string name="main_lcd_sleep">Sleep LCD</string>
+    <string name="main_lcd_clear">Clear LCD</string>
     <string name="main_cash_box">Open cash box</string>
     <string name="main_qsc">Infrared scanner</string>
+    <string name="main_qsc_open">Open Infrared scanner</string>
+    <string name="main_qsc_close">Close Infrared scanner</string>
     <string name="main_scan">Camera scanner</string>
     <string name="res_not_support">Current printer version is not support</string>
 

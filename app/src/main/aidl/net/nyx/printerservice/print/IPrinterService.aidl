@@ -43,9 +43,20 @@ interface IPrinterService {
      *                     2--content below the barcode
      *                     3--text print both the top and bottom of the barcode
      * @param align        alignment, the default is 0. 0--Align left, 1--Align center, 2--Align right
+     * @param symbology    barcode type, default 0
+     *                     0--CODE128
+     *                     1--CODE39
+     *                     2--CODE93
+     *                     3--UPC-A
+     *                     4--UPC-E
+     *                     5--EAN13
+     *                     6--EAN8
+     *                     7--ITF
+     *                     8--CODABAR
      * @return Print result
+     * @since PrinterService v1.9.4 support param symbology
      */
-    int printBarcode(String content, int width, int height, int textPosition, int align);
+    int printBarcode(String content, int width, int height, int textPosition, int align, int symbology);
 
     /**
      * Print QR code
@@ -185,10 +196,12 @@ interface IPrinterService {
     /**
      * Trigger infrared scan
      *
+     * @param opt trigger option 0--open 1--close
      * @return Result
      * @since PrinterService v1.7.0
+     * @since PrinterService v1.9.4 support param opt
      */
-    int triggerQscScan();
+    int triggerQscScan(int opt);
 
     /**
      * Set default logo for customer display LCD

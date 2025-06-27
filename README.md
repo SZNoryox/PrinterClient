@@ -63,7 +63,7 @@ try {
     // textFormat.setTextSize(32);
     // textFormat.setUnderline(true);
     int ret = printerService.printText(text, textFormat);
-    ret = printerService.printBarcode("123456789", 300, 160, 1, 1);
+    ret = printerService.printBarcode("123456789", 300, 160, 1, 1, 0);
     ret = printerService.printQrCode("123456789", 300, 300, 1);
     if (ret == 0) {
         printerService.printEndAutoOut();
@@ -172,7 +172,7 @@ private void printLabel() {
                 if (ret == 0) {
                     PrintTextFormat format = new PrintTextFormat();
                     printerService.printText("/nModel:/t/tNB55", format);
-                    printerService.printBarcode("1234567890987654321", 320, 90, 2, 0);
+                    printerService.printBarcode("1234567890987654321", 320, 90, 2, 0, 0);
                     String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
                     printerService.printText("Time:/t/t" + date, format);
                     ret = printerService.labelPrintEnd();
@@ -206,7 +206,7 @@ private void printLabelLearning() {
                     if (ret == 0) {
                         PrintTextFormat format = new PrintTextFormat();
                         printerService.printText("/nModel:/t/tNB55", format);
-                        printerService.printBarcode("1234567890987654321", 320, 90, 2, 0);
+                        printerService.printBarcode("1234567890987654321", 320, 90, 2, 0, 0);
                         String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
                         printerService.printText("Time:/t/t" + date, format);
                         printerService.labelPrintEnd();
@@ -325,7 +325,7 @@ private void setLcdLogo() {
                 if (ret == 0) {
                     ret = printerService.setLcdLogo(bitmap);
                 }
-                showLog("Show LCD default: " + msg(ret));
+                showLog("Set LCD logo: " + msg(ret));
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -392,14 +392,30 @@ private void unregisterQscReceiver() {
 ```
 
 By default, infrared scan will be triggered by the side button. Here is the code for soft trigger
+
+Note: The infrared scan close function has a minimum system version requirement.
 ```
-private void infraredScan() {
+private void openInfraredScan() {
     singleThreadExecutor.submit(new Runnable() {
         @Override
         public void run() {
             try {
-                int ret = printerService.triggerQscScan();
-                showLog("Infrared scan: " + msg(ret));
+                int ret = printerService.triggerQscScan(0);
+                showLog("Open Infrared scan: " + msg(ret));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+    });
+}
+
+private void closeInfraredScan() {
+    singleThreadExecutor.submit(new Runnable() {
+        @Override
+        public void run() {
+            try {
+                int ret = printerService.triggerQscScan(1);
+                showLog("Close Infrared scan: " + msg(ret));
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
