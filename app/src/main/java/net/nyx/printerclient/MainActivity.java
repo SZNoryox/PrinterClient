@@ -1,5 +1,7 @@
 package net.nyx.printerclient;
 
+import static net.nyx.printerclient.Result.msg;
+
 import android.app.AlertDialog;
 import android.content.*;
 import android.content.pm.PackageManager;
@@ -16,10 +18,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+
 import net.nyx.printerservice.print.IPrinterService;
 import net.nyx.printerservice.print.PrintTextFormat;
-import timber.log.Timber;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -28,7 +32,7 @@ import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static net.nyx.printerclient.Result.msg;
+import timber.log.Timber;
 
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
@@ -68,6 +72,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         initView();
         bindService();
         registerQscScanReceiver();
+        registerPrinterStatusReceiver();
         Timber.plant(new Timber.DebugTree());
         PRN_TEXT = getString(R.string.print_text);
     }
@@ -144,6 +149,34 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+    private static final String ACTION_PRN_STATUS = "net.nyx.printerservice.PRN_STATUS";
+    private static final String EXTRA_PRN_STATUS = "status";
+
+    private final BroadcastReceiver printerStatusReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (ACTION_PRN_STATUS.equals(intent.getAction())) {
+                int code = intent.getIntExtra(EXTRA_PRN_STATUS, 0);
+                showLog("Printer status: %d, %s", code, Result.msg(code));
+            }
+        }
+    };
+
+    private void registerPrinterStatusReceiver() {
+        IntentFilter filter = new IntentFilter(ACTION_PRN_STATUS);
+        ContextCompat.registerReceiver(
+                this,
+                printerStatusReceiver,
+                filter,
+                ContextCompat.RECEIVER_EXPORTED
+        );
+    }
+
+    private void unregisterPrinterStatusReceiver() {
+        unregisterReceiver(printerStatusReceiver);
+    }
+
     private void getVersion() {
         singleThreadExecutor.submit(new Runnable() {
             @Override
@@ -207,6 +240,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     int ret = printerService.setPrinterDensity(density);
                     showLog("Set printer density: " + msg(ret));
                 } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void cutPaper() {
+        singleThreadExecutor.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // 0 -- default full cut
+                    // 1 -- partial cut
+                    printerService.cutPaper(0);
+                } catch (RemoteException e) {
                     e.printStackTrace();
                 }
             }
@@ -534,7 +582,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void registerQscScanReceiver() {
         IntentFilter filter = new IntentFilter();
         filter.addAction("com.android.NYX_QSC_DATA");
-        registerReceiver(qscReceiver, filter);
+        ContextCompat.registerReceiver(
+                this,
+                qscReceiver,
+                filter,
+                ContextCompat.RECEIVER_EXPORTED
+        );
     }
 
     private void unregisterQscReceiver() {
@@ -606,6 +659,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SCAN && resultCode == RESULT_OK && data != null) {
             String result = data.getStringExtra("SCAN_RESULT");
             showLog("Scanner result: " + result);
@@ -626,6 +680,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         super.onDestroy();
         unbindService();
         unregisterQscReceiver();
+        unregisterPrinterStatusReceiver();
     }
 
     @Override

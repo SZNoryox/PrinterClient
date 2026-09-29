@@ -229,13 +229,48 @@ private void printLabelLearning() {
 ### Printer result
 All the printer interfaces will return the integer result, please refer to [SdkResult.java](app/src/main/java/net/nyx/printerclient/SdkResult.java)
 
+Printer status broadcast(PrinterService v2.0.10 and above support)
+```
+private static final String ACTION_PRN_STATUS = "net.nyx.printerservice.PRN_STATUS";
+private static final String EXTRA_PRN_STATUS = "status";
+
+private final BroadcastReceiver printerStatusReceiver = new BroadcastReceiver() {
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (ACTION_PRN_STATUS.equals(intent.getAction())) {
+            int code = intent.getIntExtra(EXTRA_PRN_STATUS, 0);
+            showLog("Printer status: %d, %s", code, Result.msg(code));
+        }
+    }
+};
+
+private void registerPrinterStatusReceiver() {
+    IntentFilter filter = new IntentFilter(ACTION_PRN_STATUS);
+    ContextCompat.registerReceiver(
+            this,
+            printerStatusReceiver,
+            filter,
+            ContextCompat.RECEIVER_EXPORTED
+    );
+}
+
+private void unregisterPrinterStatusReceiver() {
+    unregisterReceiver(printerStatusReceiver);
+}
+```
+
 ### Others
 
 #### 1. Dynamically switch print density
-[net.nyx.printerservice.print.IPrinterService.aidl](app/src/main/aidl/net/nyx/printerservice/print/IPrinterService.aidl) `setPrinterDensity` `getPrinterDensity`
+[net.nyx.printerservice.print.IPrinterService.aidl](app/src/main/aidl/net/nyx/printerservice/print/IPrinterService.aidl) `setPrinterDensity` `getPrinterDensity`(Printer service v1.9.2 and above support this)
 
 #### 2. Use 58mm paper on 80mm printer
-[net.nyx.printerservice.print.IPrinterService.aidl](app/src/main/aidl/net/nyx/printerservice/print/IPrinterService.aidl) `setPaperWidth`
+[net.nyx.printerservice.print.IPrinterService.aidl](app/src/main/aidl/net/nyx/printerservice/print/IPrinterService.aidl) `setPaperWidth`(PrinterService v2.0.5 and above support)
+
+#### 3. Paper cutter
+[net.nyx.printerservice.print.IPrinterService.aidl](app/src/main/aidl/net/nyx/printerservice/print/IPrinterService.aidl) `cutPaper`(PrinterService v2.0.7 and above support)
+
 
 ## LCD customer display
 Devices that support the customer display screen can control the LCD. Device without this module will return an error when calling the interface
@@ -395,7 +430,12 @@ private final BroadcastReceiver qscReceiver = new BroadcastReceiver() {
 private void registerQscScanReceiver() {
     IntentFilter filter = new IntentFilter();
     filter.addAction("com.android.NYX_QSC_DATA");
-    registerReceiver(qscReceiver, filter);
+    ContextCompat.registerReceiver(
+            this,
+            qscReceiver,
+            filter,
+            ContextCompat.RECEIVER_EXPORTED
+    );
 }
 
 private void unregisterQscReceiver() {

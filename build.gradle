@@ -7,7 +7,7 @@ buildscript {
         
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.0'
+        classpath 'com.android.tools.build:gradle:8.7.0'
     }
 }
 
@@ -16,17 +16,6 @@ allprojects {
         google()
         jcenter()
         
-    }
-
-    tasks.withType(JavaCompile) {
-        options.encoding = 'UTF-8'
-    }
-    tasks.withType(Javadoc) {
-        options {
-            encoding 'UTF-8'
-            charSet 'UTF-8'
-            links 'http://docs.oracle.com/javase/7/docs/api'
-        }
     }
 
     setBuildDir(new File(rootDir, "build/${path.replaceAll(':', '/')}"))

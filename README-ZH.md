@@ -232,13 +232,47 @@ private void printLabelLearning() {
 ### 打印结果
 所有打印接口都返回int类型结果，参考 [SdkResult.java](app/src/main/java/net/nyx/printerclient/SdkResult.java) 对打印结果进行相关处理
 
+注册打印机状态广播(打印服务 v2.0.10 及以上支持)
+```
+private static final String ACTION_PRN_STATUS = "net.nyx.printerservice.PRN_STATUS";
+private static final String EXTRA_PRN_STATUS = "status";
+
+private final BroadcastReceiver printerStatusReceiver = new BroadcastReceiver() {
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (ACTION_PRN_STATUS.equals(intent.getAction())) {
+            int code = intent.getIntExtra(EXTRA_PRN_STATUS, 0);
+            showLog("Printer status: %d, %s", code, Result.msg(code));
+        }
+    }
+};
+
+private void registerPrinterStatusReceiver() {
+    IntentFilter filter = new IntentFilter(ACTION_PRN_STATUS);
+    ContextCompat.registerReceiver(
+            this,
+            printerStatusReceiver,
+            filter,
+            ContextCompat.RECEIVER_EXPORTED
+    );
+}
+
+private void unregisterPrinterStatusReceiver() {
+    unregisterReceiver(printerStatusReceiver);
+}
+```
+
 ### 打印补充
 
 #### 1. 动态切换打印浓度
-[net.nyx.printerservice.print.IPrinterService.aidl](app/src/main/aidl/net/nyx/printerservice/print/IPrinterService.aidl) `setPrinterDensity` `getPrinterDensity`
+[net.nyx.printerservice.print.IPrinterService.aidl](app/src/main/aidl/net/nyx/printerservice/print/IPrinterService.aidl) `setPrinterDensity` `getPrinterDensity`(打印服务v1.9.2及以上支持)
 
 #### 2. 80mm打印头使用58mm纸
-[net.nyx.printerservice.print.IPrinterService.aidl](app/src/main/aidl/net/nyx/printerservice/print/IPrinterService.aidl) `setPaperWidth`
+[net.nyx.printerservice.print.IPrinterService.aidl](app/src/main/aidl/net/nyx/printerservice/print/IPrinterService.aidl) `setPaperWidth`(打印服务v2.0.5及以上支持)
+
+#### 3. 切刀
+[net.nyx.printerservice.print.IPrinterService.aidl](app/src/main/aidl/net/nyx/printerservice/print/IPrinterService.aidl) `cutPaper`(打印服务v2.0.7及以上支持) 只在切刀版本设备上生效, 非切刀版本会返回 `SdkReuslt.SDK_FEATURE_NOT_SUPPORT`
 
 
 ## 客显屏
@@ -399,7 +433,12 @@ private final BroadcastReceiver qscReceiver = new BroadcastReceiver() {
 private void registerQscScanReceiver() {
     IntentFilter filter = new IntentFilter();
     filter.addAction("com.android.NYX_QSC_DATA");
-    registerReceiver(qscReceiver, filter);
+    ContextCompat.registerReceiver(
+            this,
+            qscReceiver,
+            filter,
+            ContextCompat.RECEIVER_EXPORTED
+    );
 }
 
 private void unregisterQscReceiver() {

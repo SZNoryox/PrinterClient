@@ -244,4 +244,15 @@ interface IPrinterService {
      * @since PrinterService v2.0.5
      */
     int setPaperWidth(int width);
+
+    /**
+     * Paper cutter. Call cutter after function printEndAutoOut.
+     *
+     * @param mode cut mode
+     *             0: Full cut
+     *             1: Partial cut
+     * @return Result
+     * @since PrinterService v2.0.7
+     */
+    int cutPaper(int mode);
 }
