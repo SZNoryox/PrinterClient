@@ -167,14 +167,16 @@ interface IPrinterService {
     int printEndAutoOut();
 
     /**
-     * Show black-white bitmap in customer display LCD
+     * Show bitmap in customer display LCD
      *
      * @param bitmap Android bitmap object
+     * @param type   0--only show black-white bitmap 1--show origin bitmap(colored bitmap)
      * @return Result
      * @since PrinterService v1.5.9 only support black-white bitmap
      * @since PrinterService v1.7.6 support colored bitmap automatic conversion
+     * @since PrinterService v2.0.12 support param type
      */
-    int showLcdBitmap(in Bitmap bitmap);
+    int showLcdBitmap(in Bitmap bitmap, int type);
 
     /**
      * Control the status of the customer display LCD

@@ -508,7 +508,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     int ret = printerService.configLcd(0);
                     if (ret == 0) {
                         Bitmap bitmap = BitmapFactory.decodeStream(getAssets().open("bmp.png"));
-                        ret = printerService.showLcdBitmap(bitmap);
+                        ret = printerService.showLcdBitmap(bitmap, 0);
                     }
                     showLog("Show LCD bitmap: " + msg(ret));
                 } catch (Exception e) {

@@ -349,7 +349,7 @@ private void showLcdBitmap() {
                 // init
                 int ret = printerService.configLcd(0);
                 if (ret == 0) {
-                    ret = printerService.showLcdBitmap(bitmap);
+                    ret = printerService.showLcdBitmap(bitmap, 0);
                 }
                 showLog("Show LCD bitmap: " + msg(ret));
             } catch (RemoteException e) {
