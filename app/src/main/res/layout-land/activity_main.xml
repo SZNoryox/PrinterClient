@@ -159,7 +159,7 @@
                 >
 
                 <Button
-                    android:id="@+id/btn_lcd_show"
+                    android:id="@+id/btn_lcd_bmp"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
                     android:layout_weight="1"

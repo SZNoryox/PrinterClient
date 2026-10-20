@@ -7,10 +7,10 @@ android {
 
     defaultConfig {
         applicationId "net.nyx.printerclient"
-        minSdk  21
+        minSdk  23
         targetSdk 36
         versionCode 1
-        versionName "1.0.8"
+        versionName "1.0.9"
     }
 
     signingConfigs {
@@ -47,9 +47,6 @@ android {
 
 
     applicationVariants.all { variant ->
-        if (variant.buildType.name != "debug") {
-            variant.getPackageApplicationProvider().get().outputDirectory = new File(project.rootDir.absolutePath + "/apk")
-        }
         variant.outputs.all { output ->
             outputFileName = "${((project.name != "app") ? project.name : rootProject.name)}" +
                     "-${variant.buildType.name}" +

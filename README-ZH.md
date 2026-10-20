@@ -336,25 +336,37 @@ singleThreadExecutor.submit(new Runnable() {
 
 ### 客显显示
 
-**图片尺寸要与客显屏尺寸一致，小于客显屏的图片将居中显示**
+~~图片尺寸要与客显屏尺寸一致，小于客显屏的图片将居中显示~~
+
+自 **PrinterService v2.0.14** 起支持图片偏移量, LCD屏左上角为坐标原点, x和y为横/纵坐标偏移量
+
+小于客显屏的图片将不再居中显示而是根据偏移量来显示, 当x=0,y=0时即从屏幕左上角开始绘制
 ```
 private void showLcdBitmap() {
-    singleThreadExecutor.submit(new Runnable() {
-        @Override
-        public void run() {
-            // 240*320 LCD
-            String content = Utils.getRandomStr(100);
-            Bitmap bitmap = Utils.createQRCode(content, 220, 220);
-            try {
-                // init
-                int ret = printerService.configLcd(0);
-                if (ret == 0) {
-                    ret = printerService.showLcdBitmap(bitmap, 0);
+    singleThreadExecutor.submit(() -> {
+        try {
+            // init
+            int ret = printerService.configLcd(0);
+            if (ret == 0) {
+                // clear lcd before partial refresh
+                printerService.configLcd(3);
+                if (which == 0) {
+                    Bitmap bmp1 = Utils.createTextBitmap("Welcome", 32);
+                    Bitmap bmp2 = Utils.createTextBitmap("This is a test content", 24);
+                    Bitmap bmp3 = Utils.createTextBitmap("Thanks", 24);
+                    int x = 20;
+                    int y = 20;
+                    printerService.showLcdBitmap(bmp1, 0, x, y);
+                    printerService.showLcdBitmap(bmp2, 0, x, y += (bmp1.getHeight() + 50));
+                    printerService.showLcdBitmap(bmp3, 0, x, y + (bmp2.getHeight() + 50));
+                } else if (which == 1) {
+                    Bitmap bitmap = BitmapFactory.decodeStream(getAssets().open("bmp.png"));
+                    ret = printerService.showLcdBitmap(bitmap, 1, 20, 20);
                 }
-                showLog("Show LCD bitmap: " + msg(ret));
-            } catch (RemoteException e) {
-                e.printStackTrace();
             }
+            showLog("Show LCD bitmap: " + msg(ret));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     });
 }

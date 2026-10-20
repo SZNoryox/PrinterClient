@@ -170,13 +170,15 @@ interface IPrinterService {
      * Show bitmap in customer display LCD
      *
      * @param bitmap Android bitmap object
-     * @param type   0--only show black-white bitmap 1--show origin bitmap(colored bitmap)
+     * @param type   0--only show black-white bitmap
+     *               1--show origin bitmap(colored bitmap)
      * @return Result
      * @since PrinterService v1.5.9 only support black-white bitmap
      * @since PrinterService v1.7.6 support colored bitmap automatic conversion
-     * @since PrinterService v2.0.12 support param type
+     * @since PrinterService v2.0.12 support type param
+     * @since PrinterService v2.0.14 Support partial refresh; x and y are the bitmap offsets
      */
-    int showLcdBitmap(in Bitmap bitmap, int type);
+    int showLcdBitmap(in Bitmap bitmap, int type, int x, int y);
 
     /**
      * Control the status of the customer display LCD

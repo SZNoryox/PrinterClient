@@ -334,25 +334,39 @@ singleThreadExecutor.submit(new Runnable() {
 
 ### LCD display
 
-**The size of the bitmap must be same as the size of the LCD. If the bitmap is smaller than the LCD, it will be shown in the center of LCD**
+~~The size of the bitmap must be same as the size of the LCD. If the bitmap is smaller than the LCD, it will be shown in the center of LCD~~
+
+
+Since PrinterService v2.0.14, showLcdBitmap supports an image offset. The origin is the top-left corner of the LCD; x and y are the horizontal and vertical offsets.
+
+The bitmap smaller than the screen is no longer centered — it is rendered at the given offset. With x = 0, y = 0, rendering starts from the screen's top-left corner.
 
 ```
 private void showLcdBitmap() {
-    singleThreadExecutor.submit(new Runnable() {
-        @Override
-        public void run() {
-            // 240*320 LCD
-            String content = Utils.getRandomStr(100);
-            Bitmap bitmap = Utils.createQRCode(content, 220, 220);
-            try {
-                // init
-                int ret = printerService.configLcd(0);
-                if (ret == 0) {
-                    ret = printerService.showLcdBitmap(bitmap, 0);
+    singleThreadExecutor.submit(() -> {
+        try {
+            // init
+            int ret = printerService.configLcd(0);
+            if (ret == 0) {
+                // clear lcd before partial refresh
+                printerService.configLcd(3);
+                if (which == 0) {
+                    Bitmap bmp1 = Utils.createTextBitmap("Welcome", 32);
+                    Bitmap bmp2 = Utils.createTextBitmap("This is a test content", 24);
+                    Bitmap bmp3 = Utils.createTextBitmap("Thanks", 24);
+                    int x = 20;
+                    int y = 20;
+                    printerService.showLcdBitmap(bmp1, 0, x, y);
+                    printerService.showLcdBitmap(bmp2, 0, x, y += (bmp1.getHeight() + 50));
+                    printerService.showLcdBitmap(bmp3, 0, x, y + (bmp2.getHeight() + 50));
+                } else if (which == 1) {
+                    Bitmap bitmap = BitmapFactory.decodeStream(getAssets().open("bmp.png"));
+                    ret = printerService.showLcdBitmap(bitmap, 1, 20, 20);
                 }
-            } catch (RemoteException e) {
-                e.printStackTrace();
             }
+            showLog("Show LCD bitmap: " + msg(ret));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     });
 }

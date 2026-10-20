@@ -3,12 +3,21 @@ package net.nyx.printerclient;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
+
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -133,5 +142,26 @@ public class Utils {
         bs[2] = (byte) (offset % 256);
         bs[3] = (byte) (offset / 256);
         return bs;
+    }
+
+    public static Bitmap createTextBitmap(@NotNull String text, int textSize) {
+        final int MAX_WIDTH = 240;
+
+        TextPaint paint = new TextPaint();
+        paint.setColor(Color.BLACK);
+        paint.setAntiAlias(true);
+        paint.setTextSize(textSize);
+
+        StaticLayout layout = StaticLayout.Builder
+                .obtain(text, 0, text.length(), paint, MAX_WIDTH)
+                .setAlignment(Layout.Alignment.ALIGN_NORMAL)
+                .setIncludePad(false)
+                .build();
+
+        Bitmap bitmap = Bitmap.createBitmap(MAX_WIDTH, layout.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawColor(Color.WHITE);
+        layout.draw(canvas);
+        return bitmap;
     }
 }

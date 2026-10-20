@@ -25,6 +25,7 @@ import androidx.core.content.ContextCompat;
 import net.nyx.printerservice.print.IPrinterService;
 import net.nyx.printerservice.print.PrintTextFormat;
 
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -499,24 +500,44 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void showLcdBitmap() {
-        showDialog();
-        singleThreadExecutor.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    // init
-                    int ret = printerService.configLcd(0);
-                    if (ret == 0) {
-                        Bitmap bitmap = BitmapFactory.decodeStream(getAssets().open("bmp.png"));
-                        ret = printerService.showLcdBitmap(bitmap, 0);
-                    }
-                    showLog("Show LCD bitmap: " + msg(ret));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                hideDialog();
-            }
-        });
+        String[] list = {
+                "Black/White",
+                "Colored"
+        };
+        new AlertDialog
+                .Builder(this, android.R.style.Theme_Material_Light_Dialog)
+                .setItems(list, (dialog, which) -> {
+                    showDialog();
+                    singleThreadExecutor.submit(() -> {
+                        try {
+                            // init
+                            int ret = printerService.configLcd(0);
+                            if (ret == 0) {
+                                // clear lcd before partial refresh
+                                printerService.configLcd(3);
+                                if (which == 0) {
+                                    Bitmap bmp1 = Utils.createTextBitmap("Welcome", 32);
+                                    Bitmap bmp2 = Utils.createTextBitmap("This is a test content", 24);
+                                    Bitmap bmp3 = Utils.createTextBitmap("Thanks", 24);
+                                    int x = 20;
+                                    int y = 20;
+                                    printerService.showLcdBitmap(bmp1, 0, x, y);
+                                    printerService.showLcdBitmap(bmp2, 0, x, y += (bmp1.getHeight() + 50));
+                                    printerService.showLcdBitmap(bmp3, 0, x, y + (bmp2.getHeight() + 50));
+                                } else if (which == 1) {
+                                    Bitmap bitmap = BitmapFactory.decodeStream(getAssets().open("bmp.png"));
+                                    ret = printerService.showLcdBitmap(bitmap, 1, 20, 20);
+                                }
+                            }
+                            showLog("Show LCD bitmap: " + msg(ret));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        hideDialog();
+                    });
+                })
+                .show();
+
     }
 
     private void configLcd() {
